@@ -14,8 +14,7 @@ class BrotliConan(ConanFile):
     generators = "cmake"
     scm = {
         "type": "git",
-        # "url": "https://github.com/google/brotli.git",
-        "url": "file:///Users/yuweishan/brotli.git",
+        "url": "https://github.com/google/brotli.git",
         "revision": "v"+version
     }
 
