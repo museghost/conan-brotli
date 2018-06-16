@@ -27,6 +27,9 @@ class BrotliConan(ConanFile):
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()''')
 
+        # log2 is not available for some platform, see FastLog2
+        tools.replace_in_file("CMakeLists.txt", 'message(FATAL_ERROR "log2() not found")', 'message(WARNING "log2() not found")')
+
     # def build_id(self):
     #     self.info_build.options.shared = "any"
 
