@@ -66,11 +66,12 @@ conan_basic_setup()''')
         self.copy("*.a", dst="lib", keep_path=False)
 
     def package_info(self):
-        self.cpp_info.libs = ["brotlicommon", "brotlidec", "brotlienc"]
+        # for gcc, library order should be followed below
+        self.cpp_info.libs = ["brotlidec", "brotlienc", "brotlicommon"]
 
         if self.settings.compiler != "Visual Studio":
             if self.settings.os == "Linux":
-                self.cpp_info.libs.extend(["m", "pthread"])
+                self.cpp_info.libs.extend(["m"])
 
     def configure(self):
         del self.settings.compiler.libcxx
