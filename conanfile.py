@@ -33,7 +33,7 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()''')
 
         # log2 is not available for some platform, see FastLog2
-        tools.replace_in_file("CMakeLists.txt", 'message(FATAL_ERROR "log2() not found")', 'message(WARNING "log2() not found")')
+        # tools.replace_in_file("CMakeLists.txt", 'message(FATAL_ERROR "log2() not found")', 'message(WARNING "log2() not found")')
 
     # def build_id(self):
     #     self.info_build.options.shared = "any"
@@ -67,6 +67,10 @@ conan_basic_setup()''')
 
     def package_info(self):
         self.cpp_info.libs = ["brotlicommon", "brotlidec", "brotlienc"]
+
+        if self.settings.compiler != "Visual Studio":
+            if self.settings.os == "Linux":
+                self.cpp_info.libs.extend(["m", "pthread"])
 
     def configure(self):
         del self.settings.compiler.libcxx
