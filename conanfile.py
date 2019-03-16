@@ -4,19 +4,25 @@ import os.path
 
 class BrotliConan(ConanFile):
     name = "brotli"
-    version = "1.0.4"
+    version = "1.0.7"
     license = "MIT License"
     url = "https://github.com/google/brotli"
     description = "Brotli is a generic-purpose lossless compression algorithm that compresses data using a combination of a modern variant of the LZ77 algorithm, Huffman coding and 2nd order context modeling, with a compression ratio comparable to the best currently available general-purpose compression methods. It is similar in speed with deflate but offers more dense compression."
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False]}
-    default_options = "shared=False"
+    options = {"shared": [True, False],
+               "fPIC": [True, False],}
+    default_options = ("shared=False",
+                       "fPIC=True",)
     generators = "cmake"
     scm = {
         "type": "git",
         "url": "https://github.com/google/brotli.git",
         "revision": "v"+version
     }
+
+    def config_options(self):
+        if self.settings.os == "Windows":
+            self.options.remove("fPIC")
 
     def source(self):
         # This small hack might be useful to guarantee proper /MT /MD linkage
@@ -34,6 +40,10 @@ conan_basic_setup()''')
 
     def build(self):
         cmake = CMake(self)
+
+        if self.settings.compiler != 'Visual Studio':
+            cmake.definitions['CMAKE_POSITION_INDEPENDENT_CODE'] = self.options.fPIC
+
         cmake.configure(defs={"BROTLI_BUNDLED_MODE":"ON"})
         pattern = "brotli%s"
         if not self.options.shared: pattern += "-static"
